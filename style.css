@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+}
+
+.calc-body {
+  background-color: rgb(175, 13, 13);
+  width: 450px;
+  height: 650px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 4px solid #000;
+}
+
+.display {
+  margin-top: 35px;
+  margin-left: 35px;
+  margin-right: 35px;
+  background-color: rgb(182, 250, 176);
+  width: 400px;
+  height: 160px;
+  border-radius: 15px;
+  position: relative;
+  border: 2px solid #000;
+  overflow: hidden;
+}
+
+.display .display-text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  font-size: 40px;
+}
+
+.buttons {
+  margin-top: 35px;
+  margin-bottom: 35px;
+  width: 375px;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 93px 93px 93px auto;
+  grid-template-rows: 80px auto auto auto auto;
+  /* column-gap: 10px;
+  row-gap: 10px; */
+}
+
+.btn {
+  margin: 10px 7px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px black;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-size: 22px;
+  user-select: none;
+}
+
+.btn.num {
+  font-weight: bold;
+}
+
+.btn#minus {
+  font-weight: lighter;
+}
+
+.btn#zero {
+  grid-row: 5;
+  grid-column: 1 / span 2;
+}
+
+.btn#one {
+  grid-row: 4;
+  grid-column: 1;
+}
+
+.btn#two {
+  grid-row: 4;
+  grid-column: 2;
+}
+
+.btn#three {
+  grid-row: 4;
+  grid-column: 3;
+}
+
+.btn#four {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.btn#five {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.btn#six {
+  grid-row: 3;
+  grid-column: 3;
+}
+
+.btn#seven {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.btn#eight {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.btn#nine {
+  grid-row: 2;
+  grid-column: 3;
+}
+
+.btn#minus {
+  grid-row: 2;
+  grid-column: 4;
+}
+
+.btn#plus {
+  grid-row: 3;
+  grid-column: 4;
+}
+
+.btn#calculate {
+  grid-row: 4 / span 2;
+  grid-column: 4;
+}
+
+.btn#fraction {
+  grid-row: 5;
+  grid-column: 3;
+}
+
+.btn.clr {
+  font-size: 18px;
+}
