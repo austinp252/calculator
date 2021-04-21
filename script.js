@@ -1,52 +1,85 @@
-/*
-TODO:
-- handle long fracs and numbers
+let isResult = false;
 
--too many signs or in wrong places
-
-- empty string
-
--parse equation string for numbers and signs
-    - edge cases
-
--using previous answer in next solution
-
-- formatting number of digits
-
-*/
+let isNumber = new RegExp(/[\d.]/);
+let isSign_MD = new RegExp(/[/*]/);
+let isSign_AS = new RegExp(/[+-]/);
+let isSign = new RegExp(/[/*+-]/);
+let isExp = new RegExp(/e\+/);
 
 const display_text = document.querySelector('.display-text');
+
 const btn_clr = document.querySelector('.btn.clr');
 const btn_calc = document.querySelector('.btn.calc');
 const btn_frac = document.querySelector('.btn.frac');
+const btn_back = document.querySelector('.btn.back');
+
 const btns_num = document.querySelectorAll('.btn.num');
 const btns_sign = document.querySelectorAll('.btn.sign');
 
 btn_clr.addEventListener('click', () => {
+    isResult = false;
     display_text.innerHTML = '';
 });
 
+btn_back.addEventListener('click', () => {
+    if(isResult) {
+        display_text.innerText = '';
+        isResult = false;
+    } else {
+        display_text.innerText = display_text.innerText.substring(0, display_text.innerText.length-1);
+    }
+});
+
 btn_calc.addEventListener('click', () => {
+    if(display_text.innerText === '' || display_text.innerText === 'ERR') {
+        display_text.innerText = '';
+        return;
+    } else if(isSign.test(display_text.innerText.charAt(display_text.innerText.length-1))) {
+        display_text.innerText = 'ERR';
+        isResult = true;
+        return;
+    }
     let data = parseEquation(display_text.innerHTML);
     let result = handleEquation(data);
-    display_text.innerHTML = `${result}`;
+    if(isExp.test(result)) {
+        result = formatExponents(result.toString());
+    }
+    isResult = true;
+    display_text.innerText = `${result}`;
 });
 
 btn_frac.addEventListener('click', () => {
+    clearERR();
     display_text.innerHTML += btn_frac.innerHTML;
 });
 
 btns_num.forEach(btn_num => {
     btn_num.addEventListener('click', ()=> {
-        display_text.innerHTML += btn_num.innerHTML;
+        clearERR();
+        isResult = false;
+        display_text.innerText += btn_num.innerHTML;
     });
 });
 
 btns_sign.forEach(btn_sign => {
     btn_sign.addEventListener('click', () => {
-        display_text.innerHTML += btn_sign.id;
+        clearERR();
+        isResult = false;
+        if(display_text.innerText === '') {
+            return;
+        } 
+        else if(isSign.test(display_text.innerText.charAt(display_text.innerText.length-1))) {
+            return;
+        }
+        display_text.innerText += btn_sign.id;
     });
 });
+
+function clearERR() {
+    if(display_text.innerText === 'ERR') {
+        display_text.innerText = '';
+    }
+};
 
 function add(inpA, inpB) {
     return inpA+inpB;
@@ -70,10 +103,7 @@ function divide(inpA, inpB) {
 function parseEquation(string) { //returns array with numbers and signs
     let contents = [];
     let num = '';
-    let isNumber = new RegExp(/[\d.]/);
-    let isSign_MD = new RegExp(/[/*]/);
-    let isSign_AS = new RegExp(/[+-]/);
-    for(var i = 0; i < string.length; i++) {
+    for(var i = 0; i < string.length; i++) { //get all digits of each number
         let curChar = string.charAt(i);
         if(isNumber.test(curChar)) {
             num+=curChar;
@@ -84,7 +114,6 @@ function parseEquation(string) { //returns array with numbers and signs
         }
     }
     contents.push(parseFloat(num)); //handle last num
-    console.log(contents);
     return contents;
 };
 
@@ -113,15 +142,17 @@ function handleEquation(contents) {
     return contents[0];
 };
 
-function getNextOpIndex(contents) {
+function getNextOpIndex(contents) { //issue lies here
     let index = -1;
-    let isSign_MD = new RegExp(/[/*]/);
-    let isSign_AS = new RegExp(/[+-]/);
+    let firstFlag = false;
     for(var i = 0; i < contents.length; i++) {
-        if(isSign_AS.test(contents[i])) {
-            index = i;
-        } else if(isSign_MD.test(contents[i])) {
-            return i;
+        if(!((contents[i].toString().length > 1 && contents[i].toString().charAt(0) === '-'))) {
+            if(isSign_AS.test(contents[i]) && !firstFlag) {
+                firstFlag = true;
+                index = i;
+            } else if(isSign_MD.test(contents[i])) {
+                return i;
+            }
         }
     }
     return index;
@@ -130,3 +161,10 @@ function getNextOpIndex(contents) {
 function compare(input, sign) {
     return input === sign;
 };
+
+function formatExponents(numString) {
+    let splitString = numString.split('e');
+    let coef = parseFloat(splitString[0]).toFixed(2);
+    let result = coef+'e'+splitString[1];
+    return result;
+}
